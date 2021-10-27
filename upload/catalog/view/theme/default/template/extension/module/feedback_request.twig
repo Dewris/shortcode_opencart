@@ -1,0 +1,54 @@
+<form method="post" enctype="multipart/form-data" id="feedback_request" class="form-horizontal">
+  <fieldset>
+    <legend>{{ heading_title }}</legend>
+    <div class="form-group required">
+      <label class="col-sm-2 control-label" for="input-name">{{ entry_name }}</label>
+      <div class="col-sm-10">
+        <input type="text" name="name" value="" id="input-name" class="form-control" />
+      </div>
+    </div>
+    <div class="form-group required">
+      <label class="col-sm-2 control-label" for="input-phone">{{ entry_phone }}</label>
+      <div class="col-sm-10">
+        <input type="text" name="phone" value="" id="input-phone" class="form-control" />
+      </div>
+    </div>
+    <div class="form-group required">
+      <label class="col-sm-2 control-label" for="input-email">{{ entry_email }}</label>
+      <div class="col-sm-10">
+        <input type="text" name="email" value="" id="input-email" class="form-control" />
+      </div>
+    </div>
+  </fieldset>
+  <div class="buttons">
+    <div class="pull-right">
+      <button class="btn btn-primary">{{ entry_submit }}</button>
+    </div>
+  </div>
+</form>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    $('#feedback_request button').click(function(e){
+      $('.alert.alert-danger').remove();
+      e.preventDefault();
+      $.ajax({
+        url: 'index.php?route=extension/module/feedback_request/add_feedback_request',
+        type: 'post',
+        dataType: 'json',
+        data: $('#feedback_request').serialize(),
+        success: function(json) {
+
+          if (json['errors']) {
+            $.each(json['errors'], function (key, value) {
+
+              $('[name="'+ key + '"]').after('<div class="alert alert-danger">' + value + '</div');
+            });
+          }
+          if (json['success']) {
+            $('#feedback_request input').val('');
+          }
+        }
+      });
+    });
+  });
+</script>
